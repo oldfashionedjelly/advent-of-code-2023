@@ -1,28 +1,31 @@
 import re
+import math 
+from collections import defaultdict
 
-def read_engine_schematic(file_path):
-    with open(file_path, 'r') as file:
-        return [line.strip() for line in file]
 
-def sum_of_part_numbers(engine):
-    symbols = {'*', '+', '#', '$', '=', '/', '&', '%', '@', '-'}
-    total_sum = 0
+total = 0
+board = []
+gear_nums = defaultdict(list)
 
-    for i in range(len(engine)):
-        for j in range(len(engine[i])):
-            if engine[i][j] in symbols:
-                adjacent_numbers = re.findall(r'\d+', ''.join(engine[i-1:i+2]).ljust(j+2).rjust(j+3))
-                valid_numbers = [int(num) for num in adjacent_numbers]
-                total_sum += sum(valid_numbers)
+def consider_number_neighbors(start_y, start_x, end_y, end_x, num):
+  global gear_nums
+  for y in range(start_y, end_y+1):
+    for x in range(start_x, end_x+1):
+      if y >= 0 and y < len(board) and x >= 0 and x < len(board[y]):
+        if board[y][x] not in '0123456789.':
+          if board[y][x] == '*':
+            gear_nums[ (y,x) ].append(num)
+          return True
+  return False
 
-    return total_sum
+num_pattern = re.compile('\d+')
 
-def read_engine_schematic(file_path):
-    with open(file_path, 'r') as file:
-        return [line.strip() for line in file]
+for line in open('input.txt').readlines():
+  board.append( line.strip() )
 
-file_path = 'input.txt'
-engine_schematic = read_engine_schematic(file_path)
+for row_num in range(len(board)):
+  for match in re.finditer(num_pattern, board[row_num]):
+    if consider_number_neighbors(row_num-1, match.start()-1, row_num+1, match.end(), int(match.group(0))):
+      total += int(match.group(0))
 
-result = sum_of_part_numbers(engine_schematic)
-print("Sum of all part numbers:", result)
+print(total)

@@ -1,39 +1,37 @@
-file_path = 'results.txt'
-global total
-total=0
+cubes_per_color = {
+    "red": 12,
+    "green": 13,
+    "blue": 14,
+}
 
-def is_input_possible(input_str):
-    game, games=input_str.split(': ')
-    input_list = games.split(', ')
-    blue=0
-    red=0
-    green=0
-    for item in input_list:
-        count, color = item.split()
-        count = int(count)
-        if color == "blue":
-            blue+=count
-        if color == "green":
-            green+=count 
-        if color == "red":
-            red+=count
+end_chars = {":", ";", ",", "\n"}
 
-        if blue>14 or red>12 or green>13:
-            return False
-        else:
-            return True
+def get_game_ids_sum(lines: list[str]) -> int:
+    game_ids_sum = 0
 
-def getGame(line):
-    game, games=line.split(': ')
-    game, num=game.split(' ')
-    return int(num)
+    for line in lines:
+        line = line.lower()
+        game_id = 0
+        word_chunk = ""
+        number_chunk = ""
 
-with open(file_path, 'r') as file:
-    for line in file:
-        result = is_input_possible(line)
-        if result:
-            total+=getGame(line)
-        print(result)
+        for char in line:
+            if char in end_chars:
+                if word_chunk == "game":
+                    game_id = int(number_chunk)
+                elif word_chunk in cubes_per_color and int(number_chunk) > cubes_per_color[word_chunk]:
+                    game_id = 0
+
+                word_chunk = ""
+                number_chunk = ""
+            elif char.isalpha():
+                word_chunk += char
+            elif char.isdigit():
+                number_chunk += char
+
+        game_ids_sum += game_id
+    return game_ids_sum
 
 
-print(total)
+with open("results.txt", "r", encoding="utf-8") as f:
+    print(get_game_ids_sum(f.readlines()))

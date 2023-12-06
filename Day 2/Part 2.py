@@ -1,4 +1,4 @@
-CHUNK_END_CHARS = {":", ";", ",", "\n"}
+end_chars = {":", ";", ",", "\n"}
 
 def get_cubes_power_sum(lines: list[str]) -> int:
     cubes_power_sum = 0
@@ -15,7 +15,7 @@ def get_cubes_power_sum(lines: list[str]) -> int:
         }
 
         for char in line:
-            if char in CHUNK_END_CHARS:
+            if char in end_chars:
                 if word_chunk in max_rgb:
                     max_rgb[word_chunk] = max(max_rgb[word_chunk], int(number_chunk))
 
@@ -30,10 +30,5 @@ def get_cubes_power_sum(lines: list[str]) -> int:
     return cubes_power_sum
 
 
-def main() -> None:
-    with open("results.txt", "r", encoding="utf-8") as f:
-        print(get_cubes_power_sum(f.readlines()))
-
-
-if __name__ == "__main__":
-    main()
+with open("results.txt", "r", encoding="utf-8") as f:
+    print(get_cubes_power_sum(f.readlines()))
