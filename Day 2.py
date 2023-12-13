@@ -35,7 +35,7 @@ def smudge_removal(mirror, old_reflection):
                     mirror[row][col] = "#"
             if mirror[row][col] == ".":
                 mirror[row][col] = "#"
-                new_reflection = find(mirror, old_reflection = old_reflection )
+                new_reflection = find(mirror, old_reflection = old_reflection)
                 if new_reflection != 0:
                     return new_reflection 
                 else: 
